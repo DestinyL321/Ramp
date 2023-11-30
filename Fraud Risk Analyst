@@ -1,0 +1,18 @@
+/* Using this dataset, show the SQL query to find the rolling 3 day average transaction amount for each day in January 2021. */
+
+With transactions_by_date as (
+
+  Select
+  	cast(transaction_time as Date) As Date
+  	, SUM(transaction_amount) as total_transaction_amount
+  from transactions
+  
+  Group by cast(transaction_time as Date)
+  order by cast(transaction_time as Date)
+ )
+
+select *,
+	avg(total_transaction_amount) 
+    Over(order by date Rows Between 2 preceding And Current Row)
+    as moving_average
+  from transactions_by_date
